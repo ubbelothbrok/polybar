@@ -1,0 +1,202 @@
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/polybar/polybar
+;
+;   The README contains a lot of information
+;
+;==========================================================
+
+[colors]
+background = #000000ff
+background-alt = #000000ff
+foreground = #fbf1c7
+primary = #fe8019
+secondary = #8ABEB7
+alert = #cc241d
+disabled = #707880
+
+[bar/primary]
+monitor = eDP
+width = 100%
+height = 18pt
+radius = 0
+background = ${colors.background}
+foreground = ${colors.foreground}
+line-size = 3pt
+border-color = #000000ff
+# border-size = 1
+padding-left = 0
+padding-right = 1
+module-margin = 1
+separator = |
+separator-foreground = ${colors.disabled}
+font-0 = "Hack Nerd Font:size=10;2"
+font-1 = "Hack Nerd Font:size=10;2"
+modules-left = xworkspaces xwindow player i3
+modules-center = date
+modules-right = filesystem temperature memory cpu pulseaudio backlight battery systray
+cursor-click = pointer
+cursor-scroll = ns-resize
+enable-ipc = true
+
+[bar/secondary]
+monitor = HDMI-A-0
+width = 100%
+height = 18pt
+radius = 0
+background = ${colors.background}
+foreground = ${colors.foreground}
+line-size = 3pt
+border-color = #000000ff
+# border-size = 1
+padding-left = 0
+padding-right = 1
+module-margin = 1
+separator = |
+separator-foreground = ${colors.disabled}
+font-0 = "Hack Nerd Font:size=10;2"
+font-1 = "Hack Nerd Font:size=10;2"
+modules-left = xworkspaces xwindow player i3
+modules-center = date
+modules-right = filesystem temperature memory cpu pulseaudio backlight battery systray
+cursor-click = pointer
+cursor-scroll = ns-resize
+enable-ipc = true
+
+; wm-restack = generic
+; wm-restack = bspwm
+; wm-restack = i3
+; override-redirect = true
+
+[module/player-time]
+type = custom/script
+exec = ~/.config/polybar/scripts/player-time.sh
+interval = 1
+
+[module/player]
+type = custom/script
+exec = ~/.config/polybar/scripts/player.sh
+interval = 1
+click-middle = ~/.config/polybar/scripts/player.sh previous
+click-left = ~/.config/polybar/scripts/player.sh play-pause
+click-right = ~/.config/polybar/scripts/player.sh next
+scroll-up = ~/.config/polybar/scripts/player.sh seek-forward
+scroll-down = ~/.config/polybar/scripts/player.sh seek-backward
+format-prefix-foreground = ${colors.primary}
+
+[module/i3]
+type = internal/i3
+format = <label-mode>
+label-mode = %mode%
+
+[module/systray]
+type = internal/tray
+tray-spacing = 10pt
+
+[module/xworkspaces]
+type = internal/xworkspaces
+label-active = %name%
+label-active-background = ${colors.background-alt}
+label-active-underline= ${colors.primary}
+label-active-padding = 1
+label-occupied = %name%
+label-occupied-padding = 1
+label-urgent = %name%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+label-empty = %name%
+label-empty-foreground = ${colors.disabled}
+label-empty-padding = 1
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:30:...%
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+mount-0 = /
+label-mounted = Disk:%used%/%total%
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.disabled}
+
+[module/pulseaudio]
+type = internal/pulseaudio
+; format-volume-prefix = " Volume : "
+format-volume-prefix = " "
+format-volume-prefix-foreground = ${colors.primary}
+format-volume = <label-volume>
+label-volume = %percentage%%
+; label-muted = " Mute : 0%"
+label-muted = " 0%"
+label-muted-foreground = ${colors.disabled}
+
+
+[module/backlight]
+type = internal/backlight
+format-prefix = "󰃠 "
+format-prefix-foreground = ${colors.primary}
+label = %percentage%%
+enable-scroll = true
+
+[module/memory]
+type = internal/memory
+interval = 2
+; format-prefix = " Memory : "
+format-prefix = " "
+format-prefix-foreground = ${colors.primary}
+label = %percentage_used:2%%
+click-left = "kitty gnome-system-montor"
+
+[module/cpu]
+type = internal/cpu
+interval = 0.5
+; format-prefix = " CPU : "
+format-prefix = ""
+format-prefix-foreground = ${colors.primary}
+label = %percentage:2%%
+
+[module/date]
+type = internal/date
+interval = 1
+date = %b %d  %I:%M %p
+date-alt = %b %d %Y  %I:%M:%S %p
+label = %date%
+label-foreground = ${colors.primary}
+
+[module/battery]
+type = internal/battery
+battery = BAT1
+adapter = ACAD
+; label-charging = 󱐋 Charging :  %percentage%%
+label-charging = 󱐋 %percentage%%
+; label-discharging = Battery:%percentage%%
+label-discharging =󰂀 %percentage%%
+label-full = 󰁹 %percentage%%
+
+
+[module/temperature]
+
+interval = 0.5
+; format-prefix = " Temp : "
+format-prefix = " "
+type = internal/temperature
+
+; vim:ft=dosini
+
+
+
+
+
+
+

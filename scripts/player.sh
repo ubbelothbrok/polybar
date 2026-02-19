@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Define the length of the display window
+display_width=30
+
+# Get the current song and artist details
+artist=$(playerctl metadata artist 2> /dev/null)
+title=$(playerctl metadata title 2> /dev/null)
+
+# Concatenate artist and title
+full_text="$artist - $title"
+
+# Get the status of the player
+status=$(playerctl status 2> /dev/null)
+
+# Handle the scrolling
+if [[ -z "$full_text" ]]; then
+    full_text="No music playing"
+fi
+
+# Add padding to the text to create a scrolling effect
+padding="  "
+full_text="$full_text$padding"
+
+# Read the scroll position from a temporary file
+scroll_position_file="/tmp/polybar_scroll_position_$USER"
+scroll_position=$(cat "$scroll_position_file" 2> /dev/null)
+if [[ -z "$scroll_position" ]]; then
+    scroll_position=0
+fi
+
+# Get the current part of the text to display
+display_text=${full_text:scroll_position:display_width}
+
+# Increment the scroll position
+scroll_position=$((scroll_position + 1))
+
+# Reset the scroll position if it exceeds the text length
+if (( scroll_position >= ${#full_text} - display_width )); then
+    scroll_position=0
+fi
+
+# Save the new scroll position
+echo "$scroll_position" > "$scroll_position_file"
+
+# Display the text with status icon
+if [[ $status == "Playing" ]]; then
+    echo " $display_text"
+elif [[ $status == "Paused" ]]; then
+    echo " $display_text"
+else
+    echo " $display_text"
+fi
+
+# Handle the command input from Polybar
+case "$1" in
+    play-pause)
+        playerctl play-pause
+        ;;
+    next)
+        playerctl next
+        ;;
+    previous)
+        playerctl previous
+        ;;
+    seek-forward)
+        playerctl position 5+
+        ;;
+    seek-backward)
+        playerctl position 5-
+        ;;
+esac
