@@ -162,7 +162,7 @@ click-left = "kitty gnome-system-montor"
 type = internal/cpu
 interval = 0.5
 ; format-prefix = " CPU : "
-format-prefix = ""
+format-prefix = " "
 format-prefix-foreground = ${colors.primary}
 label = %percentage:2%%
 
